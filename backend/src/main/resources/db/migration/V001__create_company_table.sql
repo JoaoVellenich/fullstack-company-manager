@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS companies (
+    id BIGSERIAL PRIMARY KEY,
+    cnpj VARCHAR(14) NOT NULL UNIQUE,
+    company_name VARCHAR(255) NOT NULL,
+    cep VARCHAR(10) NOT NULL,
+    state VARCHAR(2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_companies_cnpj
+    ON companies(cnpj);
