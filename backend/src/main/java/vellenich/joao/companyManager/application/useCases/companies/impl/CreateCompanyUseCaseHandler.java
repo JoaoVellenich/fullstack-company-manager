@@ -1,7 +1,7 @@
-package vellenich.joao.companyManager.application.useCases.impl;
+package vellenich.joao.companyManager.application.useCases.companies.impl;
 
 import org.springframework.stereotype.Service;
-import vellenich.joao.companyManager.application.useCases.CreateCompanyUseCase;
+import vellenich.joao.companyManager.application.useCases.companies.CreateCompanyUseCase;
 import vellenich.joao.companyManager.domain.entity.Company;
 import vellenich.joao.companyManager.domain.entity.Employee;
 import vellenich.joao.companyManager.domain.enums.EmployeeType;
@@ -12,6 +12,7 @@ import vellenich.joao.companyManager.domain.repository.CompanyRepository;
 import vellenich.joao.companyManager.domain.repository.EmployeeRepository;
 import vellenich.joao.companyManager.interfaces.rest.company.CompanyResponseDto;
 import vellenich.joao.companyManager.interfaces.rest.company.CreateCompanyDto;
+import vellenich.joao.companyManager.interfaces.rest.employee.EmployeeResponseDto;
 
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class CreateCompanyUseCaseHandler implements CreateCompanyUseCase {
 
         Company company = new Company(request.cnpj(), request.companyName(), request.cep(), request.state());
 
+        List<EmployeeResponseDto> employeeResponseDtos = null;
+
         if (request.employeeId() != null && !request.employeeId().isEmpty()) {
             List<Employee> employees = employeeRepository.findAllById(request.employeeId());
 
@@ -56,6 +59,15 @@ public class CreateCompanyUseCaseHandler implements CreateCompanyUseCase {
             for (Employee employee : employees) {
                 company.addEmployee(employee);
             }
+
+            employeeResponseDtos = employees.stream()
+                    .map(e -> new EmployeeResponseDto(
+                            e.getId(), e.getName(), e.getCpf(), e.getCnpj(),
+                            e.getRg(), e.getBirthDate(), e.getType(),
+                            e.getEmail(), e.getCep(), e.getState(),
+                            null
+                    ))
+                    .toList();
         }
 
         companyRepository.save(company);
@@ -64,7 +76,8 @@ public class CreateCompanyUseCaseHandler implements CreateCompanyUseCase {
                 company.getCnpj(),
                 company.getCompanyName(),
                 company.getCep(),
-                company.getState()
+                company.getState(),
+                employeeResponseDtos
         );
     }
 }

@@ -66,4 +66,8 @@ public class Company {
     public String getState() {
         return state;
     }
+
+    public Set<CompanyEmployee> getEmployees() {
+        return employees;
+    }
 }

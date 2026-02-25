@@ -1,4 +1,4 @@
-package vellenich.joao.companyManager.application.useCases.impl;
+package vellenich.joao.companyManager.application.useCases.companies.impl;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +32,7 @@ class CreateCompanyUseCaseHandlerTest {
     private EmployeeRepository employeeRepository;
 
     @InjectMocks
-    private CreateCompanyUseCaseHandler handler;
+    private vellenich.joao.companyManager.application.useCases.companies.impl.CreateCompanyUseCaseHandler handler;
 
     @Test
     void shouldCreateCompanySuccessfully() {
@@ -114,6 +114,31 @@ class CreateCompanyUseCaseHandlerTest {
         assertEquals("12345678000100", response.cnpj());
         assertEquals("PR", response.state());
         verify(companyRepository).save(any());
+    }
+
+    @Test
+    void shouldReturnMappedEmployeesInResponse() {
+        List<Long> employeeIds = List.of(1L);
+        CreateCompanyDto request = new CreateCompanyDto("12345678000100", "Test Company", "80000000", "SP", employeeIds);
+        when(companyRepository.existsByCnpj("12345678000100")).thenReturn(false);
+
+        Employee emp1 = new Employee(EmployeeType.INDIVIDUAL, "John", "80000000", "SP");
+        when(employeeRepository.findAllById(employeeIds)).thenReturn(List.of(emp1));
+
+        CompanyResponseDto response = handler.handle(request);
+
+        assertNotNull(response.employees());
+        assertEquals(1, response.employees().size());
+        var empDto = response.employees().get(0);
+        assertEquals("John", empDto.name());
+        assertEquals(EmployeeType.INDIVIDUAL, empDto.type());
+        assertEquals("80000000", empDto.cep());
+        assertEquals("SP", empDto.state());
+        assertNull(empDto.cpf());
+        assertNull(empDto.cnpj());
+        assertNull(empDto.rg());
+        assertNull(empDto.birthDate());
+        assertNull(empDto.companies());
     }
 
     @Test

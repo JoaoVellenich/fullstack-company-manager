@@ -1,4 +1,4 @@
-package vellenich.joao.companyManager.application.useCases;
+package vellenich.joao.companyManager.application.useCases.companies;
 
 import vellenich.joao.companyManager.interfaces.rest.company.CompanyResponseDto;
 import vellenich.joao.companyManager.interfaces.rest.company.CreateCompanyDto;
