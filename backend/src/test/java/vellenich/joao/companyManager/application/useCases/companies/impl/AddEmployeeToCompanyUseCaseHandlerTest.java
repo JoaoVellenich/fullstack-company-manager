@@ -38,7 +38,7 @@ class AddEmployeeToCompanyUseCaseHandlerTest {
     @Test
     void shouldAddEmployeesToCompanySuccessfully() {
         List<Long> employeeIds = List.of(1L, 2L);
-        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(employeeIds, null);
+        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(employeeIds);
 
         Company company = new Company("12345678000100", "Test Company", "80000000", "SP");
         when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
@@ -59,7 +59,7 @@ class AddEmployeeToCompanyUseCaseHandlerTest {
 
     @Test
     void shouldThrowWhenCompanyNotFound() {
-        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(List.of(1L), null);
+        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(List.of(1L));
         when(companyRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(ObjectNotFoundException.class, () -> handler.handle(99L, request));
@@ -69,7 +69,7 @@ class AddEmployeeToCompanyUseCaseHandlerTest {
     @Test
     void shouldThrowWhenEmployeeNotFound() {
         List<Long> employeeIds = List.of(1L, 2L);
-        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(employeeIds, null);
+        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(employeeIds);
 
         Company company = new Company("12345678000100", "Test Company", "80000000", "SP");
         when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
@@ -84,7 +84,7 @@ class AddEmployeeToCompanyUseCaseHandlerTest {
     @Test
     void shouldThrowWhenPRStateCompanyHasNonLegalEntityEmployee() {
         List<Long> employeeIds = List.of(1L);
-        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(employeeIds, null);
+        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(employeeIds);
 
         Company company = new Company("12345678000100", "Test Company", "80000000", "PR");
         when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
@@ -99,7 +99,7 @@ class AddEmployeeToCompanyUseCaseHandlerTest {
     @Test
     void shouldAllowLegalEntityEmployeesInPRStateCompany() {
         List<Long> employeeIds = List.of(1L);
-        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(employeeIds, null);
+        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(employeeIds);
 
         Company company = new Company("12345678000100", "Test Company", "80000000", "PR");
         when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
