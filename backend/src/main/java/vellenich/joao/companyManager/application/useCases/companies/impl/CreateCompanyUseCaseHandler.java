@@ -2,6 +2,7 @@ package vellenich.joao.companyManager.application.useCases.companies.impl;
 
 import org.springframework.stereotype.Service;
 import vellenich.joao.companyManager.application.useCases.companies.CreateCompanyUseCase;
+import vellenich.joao.companyManager.application.utils.CompanyUseCaseUtils;
 import vellenich.joao.companyManager.domain.entity.Company;
 import vellenich.joao.companyManager.domain.entity.Employee;
 import vellenich.joao.companyManager.domain.enums.EmployeeType;
@@ -17,7 +18,7 @@ import vellenich.joao.companyManager.interfaces.rest.employee.EmployeeResponseDt
 import java.util.List;
 
 @Service
-public class CreateCompanyUseCaseHandler implements CreateCompanyUseCase {
+public class CreateCompanyUseCaseHandler extends CompanyUseCaseUtils implements CreateCompanyUseCase {
     private final CompanyRepository companyRepository;
     private final EmployeeRepository employeeRepository;
 
@@ -36,8 +37,6 @@ public class CreateCompanyUseCaseHandler implements CreateCompanyUseCase {
         }
 
         Company company = new Company(request.cnpj(), request.companyName(), request.cep(), request.state());
-
-        List<EmployeeResponseDto> employeeResponseDtos = null;
 
         if (request.employeeId() != null && !request.employeeId().isEmpty()) {
             List<Employee> employees = employeeRepository.findAllById(request.employeeId());
@@ -59,26 +58,10 @@ public class CreateCompanyUseCaseHandler implements CreateCompanyUseCase {
             for (Employee employee : employees) {
                 company.addEmployee(employee);
             }
-
-            employeeResponseDtos = employees.stream()
-                    .map(e -> new EmployeeResponseDto(
-                            e.getId(), e.getName(), e.getCpf(), e.getCnpj(),
-                            e.getRg(), e.getBirthDate(), e.getType(),
-                            e.getEmail(), e.getCep(), e.getState(),
-                            null
-                    ))
-                    .toList();
         }
 
         companyRepository.save(company);
 
-        return new CompanyResponseDto(
-                company.getId(),
-                company.getCnpj(),
-                company.getCompanyName(),
-                company.getCep(),
-                company.getState(),
-                employeeResponseDtos
-        );
+        return this.buildResponseForCompany(company);
     }
 }
