@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vellenich.joao.companyManager.application.useCases.companies.AddEmployeeToCompanyUseCase;
 import vellenich.joao.companyManager.application.useCases.companies.CreateCompanyUseCase;
+import vellenich.joao.companyManager.application.useCases.companies.DeleteCompanyUseCase;
 import vellenich.joao.companyManager.application.useCases.companies.GetCompanyUseCase;
 import vellenich.joao.companyManager.interfaces.rest.company.AddEmployeeToCompanyDto;
 import vellenich.joao.companyManager.interfaces.rest.company.CompanyResponseDto;
@@ -18,15 +19,18 @@ public class CompanyController {
     private final CreateCompanyUseCase createCompanyUseCase;
     private final AddEmployeeToCompanyUseCase addEmployeeToCompanyUseCase;
     private final GetCompanyUseCase getCompanyUseCase;
+    private final DeleteCompanyUseCase deleteCompanyUseCase;
 
     public CompanyController(
             CreateCompanyUseCase createCompanyUseCase,
             AddEmployeeToCompanyUseCase addEmployeeToCompanyUseCase,
-            GetCompanyUseCase getCompanyUseCase
+            GetCompanyUseCase getCompanyUseCase,
+            DeleteCompanyUseCase deleteCompanyUseCase
     ){
         this.createCompanyUseCase = createCompanyUseCase;
         this.addEmployeeToCompanyUseCase = addEmployeeToCompanyUseCase;
         this.getCompanyUseCase = getCompanyUseCase;
+        this.deleteCompanyUseCase = deleteCompanyUseCase;
     }
 
     @GetMapping
@@ -53,6 +57,14 @@ public class CompanyController {
     ){
         CompanyResponseDto responseBody = createCompanyUseCase.handle(requestBody);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+    }
+
+    @DeleteMapping("/{companyId}")
+    public ResponseEntity<Void> deleteCompany(
+        @PathVariable Long companyId
+    ){
+        deleteCompanyUseCase.handle(companyId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{companyId}/employee/add")

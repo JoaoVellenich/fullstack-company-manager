@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vellenich.joao.companyManager.application.useCases.employee.AddCompanyToEmployeeUseCase;
 import vellenich.joao.companyManager.application.useCases.employee.CreateEmployeeUseCase;
+import vellenich.joao.companyManager.application.useCases.employee.DeleteEmployeeUseCase;
 import vellenich.joao.companyManager.application.useCases.employee.GetEmployeeUseCase;
 import vellenich.joao.companyManager.interfaces.rest.employee.AddCompanyToEmployeeDto;
 import vellenich.joao.companyManager.interfaces.rest.employee.CreateEmployeeDto;
@@ -19,15 +20,18 @@ public class EmployeeController {
     private final CreateEmployeeUseCase createEmployeeUseCase;
     private final AddCompanyToEmployeeUseCase addCompanyToEmployeeUseCase;
     private final GetEmployeeUseCase getEmployeeUseCase;
+    private final DeleteEmployeeUseCase deleteEmployeeUseCase;
 
     public EmployeeController(
             CreateEmployeeUseCase createEmployeeUseCase,
             AddCompanyToEmployeeUseCase addCompanyToEmployeeUseCase,
-            GetEmployeeUseCase getEmployeeUseCase
+            GetEmployeeUseCase getEmployeeUseCase,
+            DeleteEmployeeUseCase deleteEmployeeUseCase
     ) {
         this.createEmployeeUseCase = createEmployeeUseCase;
         this.addCompanyToEmployeeUseCase = addCompanyToEmployeeUseCase;
         this.getEmployeeUseCase = getEmployeeUseCase;
+        this.deleteEmployeeUseCase = deleteEmployeeUseCase;
     }
 
     @GetMapping
@@ -54,6 +58,14 @@ public class EmployeeController {
     ) {
         EmployeeResponseDto responseBody = createEmployeeUseCase.handle(requestBody);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+    }
+
+    @DeleteMapping("/{employeeId}")
+    public ResponseEntity<Void> deleteEmployee(
+        @PathVariable Long employeeId
+    ) {
+        deleteEmployeeUseCase.handle(employeeId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{employeeId}/company/add")
