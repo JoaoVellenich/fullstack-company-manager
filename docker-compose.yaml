@@ -21,6 +21,26 @@ services:
       timeout: 5s
       retries: 5
 
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: company_manager_app
+    restart: always
+    ports:
+      - "5001:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_HOST: jdbc:postgresql://postgres:5432/company_db
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+
   pgadmin:
     image: dpage/pgadmin4:8
     container_name: local_pgadmin
