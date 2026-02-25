@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vellenich.joao.companyManager.application.useCases.companies.AddEmployeeToCompanyUseCase;
 import vellenich.joao.companyManager.application.useCases.companies.CreateCompanyUseCase;
+import vellenich.joao.companyManager.application.useCases.companies.GetCompanyUseCase;
 import vellenich.joao.companyManager.interfaces.rest.company.AddEmployeeToCompanyDto;
 import vellenich.joao.companyManager.interfaces.rest.company.CompanyResponseDto;
 import vellenich.joao.companyManager.interfaces.rest.company.CreateCompanyDto;
@@ -14,13 +15,24 @@ import vellenich.joao.companyManager.interfaces.rest.company.CreateCompanyDto;
 public class CompanyController {
     private final CreateCompanyUseCase createCompanyUseCase;
     private final AddEmployeeToCompanyUseCase addEmployeeToCompanyUseCase;
+    private final GetCompanyUseCase getCompanyUseCase;
 
     public CompanyController(
             CreateCompanyUseCase createCompanyUseCase,
-            AddEmployeeToCompanyUseCase addEmployeeToCompanyUseCase
+            AddEmployeeToCompanyUseCase addEmployeeToCompanyUseCase,
+            GetCompanyUseCase getCompanyUseCase
     ){
         this.createCompanyUseCase = createCompanyUseCase;
         this.addEmployeeToCompanyUseCase = addEmployeeToCompanyUseCase;
+        this.getCompanyUseCase = getCompanyUseCase;
+    }
+
+    @GetMapping("/{companyId}")
+    public ResponseEntity<CompanyResponseDto> getCompanyById(
+        @PathVariable Long companyId
+    ){
+        CompanyResponseDto responseBody = getCompanyUseCase.getCompanyById(companyId);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     @PostMapping
@@ -39,4 +51,5 @@ public class CompanyController {
         CompanyResponseDto response = addEmployeeToCompanyUseCase.handle(companyId, requestBody);
         return ResponseEntity.ok(response);
     }
+
 }
