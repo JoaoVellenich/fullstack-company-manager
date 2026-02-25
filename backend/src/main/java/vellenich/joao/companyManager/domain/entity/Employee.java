@@ -50,4 +50,13 @@ public class Employee {
     public EmployeeType getType() {
         return type;
     }
+
+    public String getName() { return name; }
+    public String getCpf() { return cpf; }
+    public String getCnpj() { return cnpj; }
+    public String getRg() { return rg; }
+    public LocalDate getBirthDate() { return birthDate; }
+    public String getEmail() { return email; }
+    public String getCep() { return cep; }
+    public String getState() { return state; }
 }
