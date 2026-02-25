@@ -2,7 +2,6 @@ package vellenich.joao.companyManager.application.useCases.companies.impl;
 
 import org.springframework.stereotype.Service;
 import vellenich.joao.companyManager.application.useCases.companies.AddEmployeeToCompanyUseCase;
-import vellenich.joao.companyManager.application.useCases.employee.CreateEmployeeUseCase;
 import vellenich.joao.companyManager.application.utils.CompanyUseCaseUtils;
 import vellenich.joao.companyManager.domain.entity.Company;
 import vellenich.joao.companyManager.domain.entity.Employee;
@@ -21,16 +20,13 @@ import java.util.List;
 public class AddEmployeeToCompanyUseCaseHandler extends CompanyUseCaseUtils implements AddEmployeeToCompanyUseCase {
     private final CompanyRepository companyRepository;
     private final EmployeeRepository employeeRepository;
-    private final CreateEmployeeUseCase createEmployeeUseCase;
 
     public AddEmployeeToCompanyUseCaseHandler(
         CompanyRepository companyRepository,
-        EmployeeRepository employeeRepository,
-        CreateEmployeeUseCase createEmployeeUseCase
+        EmployeeRepository employeeRepository
     ){
         this.companyRepository = companyRepository;
         this.employeeRepository = employeeRepository;
-        this.createEmployeeUseCase = createEmployeeUseCase;
     }
 
     @Override

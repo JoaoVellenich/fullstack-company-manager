@@ -1,5 +1,7 @@
 package vellenich.joao.companyManager.application.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,16 @@ public class CompanyController {
         this.createCompanyUseCase = createCompanyUseCase;
         this.addEmployeeToCompanyUseCase = addEmployeeToCompanyUseCase;
         this.getCompanyUseCase = getCompanyUseCase;
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<CompanyResponseDto>> listAllCompanies(
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String cnpj,
+        Pageable pageable
+    ){
+        Page<CompanyResponseDto> responseBody = getCompanyUseCase.listAllCompanies(name, cnpj, pageable);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/{companyId}")

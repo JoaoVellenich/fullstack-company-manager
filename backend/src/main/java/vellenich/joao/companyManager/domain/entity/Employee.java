@@ -6,6 +6,8 @@ import org.hibernate.type.SqlTypes;
 import vellenich.joao.companyManager.domain.enums.EmployeeType;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "employees")
@@ -14,6 +16,9 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "employee")
+    private Set<CompanyEmployee> companies = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
@@ -68,4 +73,6 @@ public class Employee {
     public void setRg(String rg) { this.rg = rg; }
     public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
     public void setEmail(String email) { this.email = email; }
+
+    public Set<CompanyEmployee> getCompanies() { return companies; }
 }

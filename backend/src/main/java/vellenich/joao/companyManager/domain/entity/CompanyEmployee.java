@@ -37,4 +37,8 @@ public class CompanyEmployee {
     public Employee getEmployee() {
         return employee;
     }
+
+    public Company getCompany() {
+        return company;
+    }
 }

@@ -3,6 +3,7 @@ package vellenich.joao.companyManager.domain.entity;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -39,6 +40,11 @@ public class Company {
     }
 
     public void addEmployee(Employee employee) {
+        boolean alreadyAssociated = employee.getId() != null && employees.stream()
+                .anyMatch(ce -> employee.getId().equals(ce.getEmployee().getId()));
+        if (alreadyAssociated) {
+            return;
+        }
         CompanyEmployee association = new CompanyEmployee(this, employee);
         employees.add(association);
     }
