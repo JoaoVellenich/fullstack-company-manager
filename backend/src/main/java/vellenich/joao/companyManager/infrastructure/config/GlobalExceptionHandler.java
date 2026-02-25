@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import vellenich.joao.companyManager.domain.exception.CompanyAlreadyExistsException;
+import vellenich.joao.companyManager.domain.exception.EmployeeAlreadyExistsException;
 import vellenich.joao.companyManager.domain.exception.EmployeeNotFoundException;
+import vellenich.joao.companyManager.domain.exception.InvalidEmployeeDataException;
 import vellenich.joao.companyManager.domain.exception.InvalidEmployeeTypeException;
 import vellenich.joao.companyManager.domain.exception.ObjectNotFoundException;
 
@@ -35,6 +37,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ObjectNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleObjectNotFoundException(ObjectNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(EmployeeAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleEmployeeAlreadyExists(EmployeeAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidEmployeeDataException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidEmployeeData(InvalidEmployeeDataException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", ex.getMessage()));
     }
 }

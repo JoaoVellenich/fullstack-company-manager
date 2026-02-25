@@ -59,4 +59,10 @@ public class Employee {
     public String getEmail() { return email; }
     public String getCep() { return cep; }
     public String getState() { return state; }
+
+    public void setCpf(String cpf) { this.cpf = cpf; }
+    public void setCnpj(String cnpj) { this.cnpj = cnpj; }
+    public void setRg(String rg) { this.rg = rg; }
+    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+    public void setEmail(String email) { this.email = email; }
 }
