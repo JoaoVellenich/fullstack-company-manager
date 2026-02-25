@@ -5,6 +5,7 @@ import vellenich.joao.companyManager.interfaces.rest.employee.EmployeeResponseDt
 import java.util.List;
 
 public record CompanyResponseDto(
+        Long id,
         String cnpj,
         String companyName,
         String cep,

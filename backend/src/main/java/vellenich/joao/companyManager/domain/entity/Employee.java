@@ -1,6 +1,8 @@
 package vellenich.joao.companyManager.domain.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import vellenich.joao.companyManager.domain.enums.EmployeeType;
 
 import java.time.LocalDate;
@@ -14,7 +16,8 @@ public class Employee {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(nullable = false, columnDefinition = "employee_type")
     private EmployeeType type;
 
     private String cpf;

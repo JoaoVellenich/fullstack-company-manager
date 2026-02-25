@@ -73,6 +73,7 @@ public class CreateCompanyUseCaseHandler implements CreateCompanyUseCase {
         companyRepository.save(company);
 
         return new CompanyResponseDto(
+                company.getId(),
                 company.getCnpj(),
                 company.getCompanyName(),
                 company.getCep(),
