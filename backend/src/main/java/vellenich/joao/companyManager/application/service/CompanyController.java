@@ -9,6 +9,7 @@ import vellenich.joao.companyManager.application.useCases.companies.AddEmployeeT
 import vellenich.joao.companyManager.application.useCases.companies.CreateCompanyUseCase;
 import vellenich.joao.companyManager.application.useCases.companies.DeleteCompanyUseCase;
 import vellenich.joao.companyManager.application.useCases.companies.GetCompanyUseCase;
+import vellenich.joao.companyManager.application.useCases.companies.RemoveEmployeeFromCompanyUseCase;
 import vellenich.joao.companyManager.interfaces.rest.company.AddEmployeeToCompanyDto;
 import vellenich.joao.companyManager.interfaces.rest.company.CompanyResponseDto;
 import vellenich.joao.companyManager.interfaces.rest.company.CreateCompanyDto;
@@ -18,17 +19,20 @@ import vellenich.joao.companyManager.interfaces.rest.company.CreateCompanyDto;
 public class CompanyController {
     private final CreateCompanyUseCase createCompanyUseCase;
     private final AddEmployeeToCompanyUseCase addEmployeeToCompanyUseCase;
+    private final RemoveEmployeeFromCompanyUseCase removeEmployeeFromCompanyUseCase;
     private final GetCompanyUseCase getCompanyUseCase;
     private final DeleteCompanyUseCase deleteCompanyUseCase;
 
     public CompanyController(
             CreateCompanyUseCase createCompanyUseCase,
             AddEmployeeToCompanyUseCase addEmployeeToCompanyUseCase,
+            RemoveEmployeeFromCompanyUseCase removeEmployeeFromCompanyUseCase,
             GetCompanyUseCase getCompanyUseCase,
             DeleteCompanyUseCase deleteCompanyUseCase
     ){
         this.createCompanyUseCase = createCompanyUseCase;
         this.addEmployeeToCompanyUseCase = addEmployeeToCompanyUseCase;
+        this.removeEmployeeFromCompanyUseCase = removeEmployeeFromCompanyUseCase;
         this.getCompanyUseCase = getCompanyUseCase;
         this.deleteCompanyUseCase = deleteCompanyUseCase;
     }
@@ -73,6 +77,15 @@ public class CompanyController {
         @RequestBody AddEmployeeToCompanyDto requestBody
     ){
         CompanyResponseDto response = addEmployeeToCompanyUseCase.handle(companyId, requestBody);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{companyId}/employee/remove")
+    public ResponseEntity<CompanyResponseDto> removeEmployeeFromCompany(
+        @PathVariable Long companyId,
+        @RequestBody AddEmployeeToCompanyDto requestBody
+    ){
+        CompanyResponseDto response = removeEmployeeFromCompanyUseCase.handle(companyId, requestBody);
         return ResponseEntity.ok(response);
     }
 

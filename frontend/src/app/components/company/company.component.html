@@ -1,0 +1,91 @@
+<div class="company-page">
+  <div class="page-header">
+    <h1>Companies</h1>
+    <a routerLink="/companies/new" class="btn btn-primary">+ Add Company</a>
+  </div>
+
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Search by name..."
+      [(ngModel)]="searchName"
+      (keyup.enter)="onSearch()"
+    />
+    <input
+      type="text"
+      placeholder="Search by CNPJ..."
+      [(ngModel)]="searchCnpj"
+      (keyup.enter)="onSearch()"
+    />
+    <button class="btn btn-secondary" (click)="onSearch()">Search</button>
+  </div>
+
+  @if (loading) {
+    <div class="state-message">Loading...</div>
+  }
+
+  @if (error) {
+    <div class="state-message error">{{ error }}</div>
+  }
+
+  @if (!loading && !error && companies.length === 0) {
+    <div class="state-message">No companies found.</div>
+  }
+
+  @if (!loading && companies.length > 0) {
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>CNPJ</th>
+          <th>CEP</th>
+          <th>State</th>
+          <th>Employees</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (company of companies; track company.id) {
+          <tr>
+            <td><a [routerLink]="['/companies', company.id]" class="company-link">{{ company.companyName }}</a></td>
+            <td>{{ formatCnpj(company.cnpj) }}</td>
+            <td>{{ company.cep }}</td>
+            <td>{{ company.state }}</td>
+            <td>{{ company.employees.length }}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" (click)="deleteCompany(company.id)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (totalPages > 1) {
+      <div class="pagination">
+        <button
+          class="btn btn-page"
+          [disabled]="page === 0"
+          (click)="goToPage(page - 1)"
+        >
+          Previous
+        </button>
+        @for (p of pages; track p) {
+          <button
+            class="btn btn-page"
+            [class.active]="p === page"
+            (click)="goToPage(p)"
+          >
+            {{ p + 1 }}
+          </button>
+        }
+        <button
+          class="btn btn-page"
+          [disabled]="page === totalPages - 1"
+          (click)="goToPage(page + 1)"
+        >
+          Next
+        </button>
+      </div>
+    }
+  }
+</div>

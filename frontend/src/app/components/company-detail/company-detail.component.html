@@ -1,0 +1,134 @@
+<div class="detail-page">
+  <a routerLink="/companies" class="back-link">← Back to companies</a>
+
+  @if (loading) {
+    <div class="state-message">Loading...</div>
+  }
+
+  @if (error) {
+    <div class="state-message error">{{ error }}</div>
+  }
+
+  @if (!loading && company) {
+    <div class="company-info">
+      <h1>{{ company.companyName }}</h1>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">CNPJ</span>
+          <span>{{ formatCnpj(company.cnpj) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">CEP</span>
+          <span>{{ company.cep }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">State</span>
+          <span>{{ company.state }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2>Employees ({{ company.employees.length }})</h2>
+      <button class="btn btn-primary" (click)="toggleSearch()">
+        {{ showSearch ? 'Cancel' : 'Add Employee' }}
+      </button>
+    </div>
+
+    @if (showSearch) {
+      <div class="search-panel">
+        <div class="search-bar">
+          <input
+            type="text"
+            placeholder="Filter by name..."
+            [(ngModel)]="searchName"
+            (ngModelChange)="onSearchChange()"
+          />
+        </div>
+
+        @if (searching) {
+          <div class="state-message">Loading employees...</div>
+        }
+
+        @if (!searching && employeeResults.length > 0) {
+          <div class="search-results">
+            @for (emp of employeeResults; track emp.id) {
+              <div class="search-result-item" [class.disabled]="isAlreadyInCompany(emp.id)">
+                <div class="result-info">
+                  <span class="result-name">{{ emp.name }}</span>
+                  <span class="result-detail">{{getDocumentFromEmployee(emp)}} · {{ emp.email }} - {{formatEmployeeTYpe(emp.type)}}</span>
+                </div>
+                @if (!isAlreadyInCompany(emp.id)) {
+                  <button class="btn btn-primary btn-sm" (click)="addEmployee(emp.id)">Add</button>
+                } @else {
+                  <span class="already-added">Already added</span>
+                }
+              </div>
+            }
+          </div>
+
+          @if (empTotalPages > 1) {
+            <div class="pagination">
+              <button
+                class="btn btn-page"
+                [disabled]="empPage === 0"
+                (click)="goToEmpPage(empPage - 1)"
+              >
+                Previous
+              </button>
+              @for (p of empPages; track p) {
+                <button
+                  class="btn btn-page"
+                  [class.active]="p === empPage"
+                  (click)="goToEmpPage(p)"
+                >
+                  {{ p + 1 }}
+                </button>
+              }
+              <button
+                class="btn btn-page"
+                [disabled]="empPage === empTotalPages - 1"
+                (click)="goToEmpPage(empPage + 1)"
+              >
+                Next
+              </button>
+            </div>
+          }
+        }
+
+        @if (!searching && employeeResults.length === 0) {
+          <div class="state-message">No employees found.</div>
+        }
+      </div>
+    }
+
+    @if (company.employees.length > 0) {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Document</th>
+            <th>Email</th>
+            <th>Type</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (emp of company.employees; track emp.id) {
+            <tr>
+              <td>{{ emp.name }}</td>
+              <td>{{ getDocumentFromEmployee(emp) }}</td>
+              <td>{{ emp.email }}</td>
+              <td>{{ formatEmployeeTYpe(emp.type) }}</td>
+              <td>
+                <button class="btn btn-danger btn-sm" (click)="removeEmployee(emp.id)">Remove</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <div class="state-message">No employees in this company yet.</div>
+    }
+  }
+</div>
