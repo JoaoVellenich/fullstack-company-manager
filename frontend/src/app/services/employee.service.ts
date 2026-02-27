@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Employee } from '../models/employee.model';
+import { Employee, CreateEmployeeRequest } from '../models/employee.model';
 import { Page } from '../models/page.model';
 
 @Injectable({ providedIn: 'root' })
@@ -27,5 +27,23 @@ export class EmployeeService {
     }
 
     return this.http.get<Page<Employee>>(this.baseUrl, { params });
+  }
+
+  getEmployeeById(id: number): Observable<Employee> {
+    return this.http.get<Employee>(`${this.baseUrl}/${id}`);
+  }
+
+  createEmployee(body: CreateEmployeeRequest): Observable<Employee> {
+    return this.http.post<Employee>(this.baseUrl, body);
+  }
+
+  deleteEmployee(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  addCompanyToEmployee(employeeId: number, companyIds: number[]): Observable<Employee> {
+    return this.http.put<Employee>(`${this.baseUrl}/${employeeId}/company/add`, {
+      companyId: companyIds,
+    });
   }
 }

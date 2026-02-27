@@ -3,6 +3,7 @@ import { HomeComponent } from './components/home/home.component';
 import { CompanyComponent } from './components/company/company.component';
 import { CompanyDetailComponent } from './components/company-detail/company-detail.component';
 import { EmployeeComponent } from './components/employee/employee.component';
+import { EmployeeDetailComponent } from './components/employee-detail/employee-detail.component';
 
 export const routes: Routes = [
   {
@@ -25,5 +26,9 @@ export const routes: Routes = [
   {
     path: 'employees',
     component: EmployeeComponent,
+  },
+  {
+    path: 'employees/:id',
+    component: EmployeeDetailComponent,
   },
 ];

@@ -1,0 +1,156 @@
+<div class="detail-page">
+  <a routerLink="/employees" class="back-link">&larr; Back to employees</a>
+
+  @if (loading) {
+    <div class="state-message">Loading...</div>
+  }
+
+  @if (error) {
+    <div class="state-message error">{{ error }}</div>
+  }
+
+  @if (!loading && employee) {
+    <div class="employee-info">
+      <h1>{{ employee.name }}</h1>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Type</span>
+          <span>{{ formatType(employee.type) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">{{ getDocumentLabel() }}</span>
+          <span>{{ getDocument() }}</span>
+        </div>
+        @if (employee.rg) {
+          <div class="info-item">
+            <span class="info-label">RG</span>
+            <span>{{ employee.rg }}</span>
+          </div>
+        }
+        @if (employee.birthDate) {
+          <div class="info-item">
+            <span class="info-label">Birth Date</span>
+            <span>{{ employee.birthDate }}</span>
+          </div>
+        }
+        @if (employee.email) {
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span>{{ employee.email }}</span>
+          </div>
+        }
+        <div class="info-item">
+          <span class="info-label">CEP</span>
+          <span>{{ employee.cep }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">State</span>
+          <span>{{ employee.state }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2>Companies ({{ employee.companies.length }})</h2>
+      <button class="btn btn-primary" (click)="toggleSearch()">
+        {{ showSearch ? 'Cancel' : 'Add Company' }}
+      </button>
+    </div>
+
+    @if (showSearch) {
+      <div class="search-panel">
+        <div class="search-bar">
+          <input
+            type="text"
+            placeholder="Filter by name..."
+            [(ngModel)]="searchName"
+            (ngModelChange)="onSearchChange()"
+          />
+        </div>
+
+        @if (searching) {
+          <div class="state-message">Loading companies...</div>
+        }
+
+        @if (!searching && companyResults.length > 0) {
+          <div class="search-results">
+            @for (comp of companyResults; track comp.id) {
+              <div class="search-result-item" [class.disabled]="isAlreadyInEmployee(comp.id)">
+                <div class="result-info">
+                  <span class="result-name">{{ comp.companyName }}</span>
+                  <span class="result-detail">{{ formatCnpj(comp.cnpj) }} &middot; {{ comp.state }}</span>
+                </div>
+                @if (!isAlreadyInEmployee(comp.id)) {
+                  <button class="btn btn-primary btn-sm" (click)="addCompany(comp.id)">Add</button>
+                } @else {
+                  <span class="already-added">Already added</span>
+                }
+              </div>
+            }
+          </div>
+
+          @if (compTotalPages > 1) {
+            <div class="pagination">
+              <button
+                class="btn btn-page"
+                [disabled]="compPage === 0"
+                (click)="goToCompPage(compPage - 1)"
+              >
+                Previous
+              </button>
+              @for (p of compPages; track p) {
+                <button
+                  class="btn btn-page"
+                  [class.active]="p === compPage"
+                  (click)="goToCompPage(p)"
+                >
+                  {{ p + 1 }}
+                </button>
+              }
+              <button
+                class="btn btn-page"
+                [disabled]="compPage === compTotalPages - 1"
+                (click)="goToCompPage(compPage + 1)"
+              >
+                Next
+              </button>
+            </div>
+          }
+        }
+
+        @if (!searching && companyResults.length === 0) {
+          <div class="state-message">No companies found.</div>
+        }
+      </div>
+    }
+
+    @if (employee.companies.length > 0) {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>CNPJ</th>
+            <th>CEP</th>
+            <th>State</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (comp of employee.companies; track comp.id) {
+            <tr>
+              <td><a [routerLink]="['/companies', comp.id]" class="company-link">{{ comp.companyName }}</a></td>
+              <td>{{ formatCnpj(comp.cnpj) }}</td>
+              <td>{{ comp.cep }}</td>
+              <td>{{ comp.state }}</td>
+              <td>
+                <button class="btn btn-danger btn-sm" (click)="removeCompany(comp.id)">Remove</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <div class="state-message">No companies associated with this employee yet.</div>
+    }
+  }
+</div>
