@@ -15,6 +15,8 @@ import vellenich.joao.companyManager.interfaces.rest.company.CompanyResponseDto;
 import vellenich.joao.companyManager.interfaces.rest.company.CreateCompanyDto;
 import vellenich.joao.companyManager.interfaces.rest.employee.EmployeeResponseDto;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 @Service
@@ -47,9 +49,10 @@ public class CreateCompanyUseCaseHandler extends CompanyUseCaseUtils implements 
 
             if ("PR".equals(request.state())) {
                 for (Employee employee : employees) {
-                    if (employee.getType() != EmployeeType.LEGAL_ENTITY) {
+                    if (employee.getType() == EmployeeType.INDIVIDUAL
+                            && Period.between(employee.getBirthDate(), LocalDate.now()).getYears() < 18) {
                         throw new InvalidEmployeeTypeException(
-                                "Companies in PR state can only have LEGAL_ENTITY employees"
+                                "Companies in PR state cannot have INDIVIDUAL employees under 18 years old"
                         );
                     }
                 }

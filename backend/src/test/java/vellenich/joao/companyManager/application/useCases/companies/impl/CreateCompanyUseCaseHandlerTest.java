@@ -15,6 +15,7 @@ import vellenich.joao.companyManager.domain.repository.EmployeeRepository;
 import vellenich.joao.companyManager.interfaces.rest.company.CompanyResponseDto;
 import vellenich.joao.companyManager.interfaces.rest.company.CreateCompanyDto;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -87,16 +88,34 @@ class CreateCompanyUseCaseHandlerTest {
     }
 
     @Test
-    void shouldThrowWhenPRStateCompanyHasIndividualEmployee() {
+    void shouldThrowWhenPRStateCompanyHasUnderageIndividualEmployee() {
         List<Long> employeeIds = List.of(1L);
         CreateCompanyDto request = new CreateCompanyDto("12345678000100", "Test Company", "80000000", "PR", employeeIds);
         when(companyRepository.existsByCnpj("12345678000100")).thenReturn(false);
 
         Employee emp1 = new Employee(EmployeeType.INDIVIDUAL, "John", "80000000", "PR");
+        emp1.setBirthDate(LocalDate.now().minusYears(17));
         when(employeeRepository.findAllById(employeeIds)).thenReturn(List.of(emp1));
 
         assertThrows(InvalidEmployeeTypeException.class, () -> handler.handle(request));
         verify(companyRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldAllowPRStateCompanyWithAdultIndividualEmployee() {
+        List<Long> employeeIds = List.of(1L);
+        CreateCompanyDto request = new CreateCompanyDto("12345678000100", "Test Company", "80000000", "PR", employeeIds);
+        when(companyRepository.existsByCnpj("12345678000100")).thenReturn(false);
+
+        Employee emp1 = new Employee(EmployeeType.INDIVIDUAL, "John", "80000000", "PR");
+        emp1.setBirthDate(LocalDate.now().minusYears(18));
+        when(employeeRepository.findAllById(employeeIds)).thenReturn(List.of(emp1));
+
+        CompanyResponseDto response = handler.handle(request);
+
+        assertEquals("12345678000100", response.cnpj());
+        assertEquals("PR", response.state());
+        verify(companyRepository).save(any());
     }
 
     @Test

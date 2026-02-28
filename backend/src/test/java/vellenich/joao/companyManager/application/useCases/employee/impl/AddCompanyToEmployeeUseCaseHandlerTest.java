@@ -17,6 +17,7 @@ import vellenich.joao.companyManager.interfaces.rest.employee.AddCompanyToEmploy
 import vellenich.joao.companyManager.interfaces.rest.employee.EmployeeResponseDto;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,11 +87,12 @@ class AddCompanyToEmployeeUseCaseHandlerTest {
     }
 
     @Test
-    void shouldThrowWhenPRCompanyAndEmployeeIsNotLegalEntity() throws Exception {
+    void shouldThrowWhenPRCompanyAndEmployeeIsUnderageIndividual() throws Exception {
         List<Long> companyIds = List.of(1L);
         AddCompanyToEmployeeDto request = new AddCompanyToEmployeeDto(companyIds);
 
         Employee employee = new Employee(EmployeeType.INDIVIDUAL, "John", "80000000", "SP");
+        employee.setBirthDate(LocalDate.now().minusYears(17));
         setId(employee, 1L);
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
 
@@ -100,6 +102,30 @@ class AddCompanyToEmployeeUseCaseHandlerTest {
 
         assertThrows(InvalidEmployeeTypeException.class, () -> handler.handle(1L, request));
         verify(companyRepository, never()).saveAll(any());
+    }
+
+    @Test
+    void shouldAllowPRCompanyWithAdultIndividualEmployee() throws Exception {
+        List<Long> companyIds = List.of(1L);
+        AddCompanyToEmployeeDto request = new AddCompanyToEmployeeDto(companyIds);
+
+        Employee employee = new Employee(EmployeeType.INDIVIDUAL, "John", "80000000", "SP");
+        employee.setBirthDate(LocalDate.now().minusYears(18));
+        setId(employee, 1L);
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
+
+        Company company = new Company("12345678000100", "Company PR", "80000000", "PR");
+        setId(company, 1L);
+        when(companyRepository.findAllById(companyIds)).thenReturn(List.of(company));
+
+        EmployeeResponseDto response = handler.handle(1L, request);
+
+        assertEquals("John", response.name());
+        assertEquals(EmployeeType.INDIVIDUAL, response.type());
+        assertNotNull(response.companies());
+        assertEquals(1, response.companies().size());
+        assertEquals("PR", response.companies().get(0).state());
+        verify(companyRepository).saveAll(List.of(company));
     }
 
     @Test

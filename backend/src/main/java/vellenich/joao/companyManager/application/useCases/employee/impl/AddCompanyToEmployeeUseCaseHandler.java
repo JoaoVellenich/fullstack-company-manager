@@ -13,6 +13,8 @@ import vellenich.joao.companyManager.interfaces.rest.company.CompanyResponseDto;
 import vellenich.joao.companyManager.interfaces.rest.employee.AddCompanyToEmployeeDto;
 import vellenich.joao.companyManager.interfaces.rest.employee.EmployeeResponseDto;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,9 +46,11 @@ public class AddCompanyToEmployeeUseCaseHandler implements AddCompanyToEmployeeU
         }
 
         for (Company company : companies) {
-            if ("PR".equals(company.getState()) && employee.getType() != EmployeeType.LEGAL_ENTITY) {
+            if ("PR".equals(company.getState())
+                    && employee.getType() == EmployeeType.INDIVIDUAL
+                    && Period.between(employee.getBirthDate(), LocalDate.now()).getYears() < 18) {
                 throw new InvalidEmployeeTypeException(
-                        "Companies in PR state can only have LEGAL_ENTITY employees"
+                        "Companies in PR state cannot have INDIVIDUAL employees under 18 years old"
                 );
             }
         }

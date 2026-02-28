@@ -16,6 +16,7 @@ import vellenich.joao.companyManager.domain.repository.EmployeeRepository;
 import vellenich.joao.companyManager.interfaces.rest.company.AddEmployeeToCompanyDto;
 import vellenich.joao.companyManager.interfaces.rest.company.CompanyResponseDto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,7 +83,7 @@ class AddEmployeeToCompanyUseCaseHandlerTest {
     }
 
     @Test
-    void shouldThrowWhenPRStateCompanyHasNonLegalEntityEmployee() {
+    void shouldThrowWhenPRStateCompanyHasUnderageIndividualEmployee() {
         List<Long> employeeIds = List.of(1L);
         AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(employeeIds);
 
@@ -90,10 +91,31 @@ class AddEmployeeToCompanyUseCaseHandlerTest {
         when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
 
         Employee emp1 = new Employee(EmployeeType.INDIVIDUAL, "John", "80000000", "PR");
+        emp1.setBirthDate(LocalDate.now().minusYears(17));
         when(employeeRepository.findAllById(employeeIds)).thenReturn(List.of(emp1));
 
         assertThrows(InvalidEmployeeTypeException.class, () -> handler.handle(1L, request));
         verify(companyRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldAllowPRStateCompanyWithAdultIndividualEmployee() {
+        List<Long> employeeIds = List.of(1L);
+        AddEmployeeToCompanyDto request = new AddEmployeeToCompanyDto(employeeIds);
+
+        Company company = new Company("12345678000100", "Test Company", "80000000", "PR");
+        when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
+
+        Employee emp1 = new Employee(EmployeeType.INDIVIDUAL, "John", "80000000", "PR");
+        emp1.setBirthDate(LocalDate.now().minusYears(18));
+        when(employeeRepository.findAllById(employeeIds)).thenReturn(List.of(emp1));
+
+        CompanyResponseDto response = handler.handle(1L, request);
+
+        assertEquals("PR", response.state());
+        assertNotNull(response.employees());
+        assertEquals(1, response.employees().size());
+        verify(companyRepository).save(company);
     }
 
     @Test

@@ -37,7 +37,7 @@ vellenich.joao.companyManager
 │   └── useCases/         → Interfaces (*UseCase) e implementacoes (*UseCaseHandler)
 ├── domain/
 │   ├── entity/           → Entidades JPA (Company, Employee, CompanyEmployee)
-│   ├── enums/            → EmployeeType (INDIVIDUAL, LEGAL_ENTITY)
+│   ├── enums/            → EmployeeType (Pessoa Física, Pessoa Jurídica)
 │   ├── exception/        → Excecoes de dominio
 │   └── repository/       → Interfaces de repositorio Spring Data JPA
 ├── infrastructure/
@@ -69,14 +69,14 @@ src/app/
 O esquema e gerenciado pelo Flyway com tres migracoes:
 
 - `V001` - Tabela `companies` (id, cnpj, company_name, cep, state)
-- `V002` - Tabela `employees` com ENUM `employee_type` (INDIVIDUAL / LEGAL_ENTITY)
+- `V002` - Tabela `employees` com ENUM `employee_type` (Pessoa Física / Pessoa Jurídica)
 - `V003` - Tabela de relacionamento `company_employees` (N:N)
 
 ## Regras de Negocio
 
-- Funcionarios do tipo **INDIVIDUAL** (Pessoa Fisica) exigem CPF, RG e data de nascimento
-- Funcionarios do tipo **LEGAL_ENTITY** (Pessoa Juridica) exigem apenas CNPJ
-- Somente funcionarios do tipo **LEGAL_ENTITY** podem ser adicionados a empresas no estado do **PR (Parana)**
+- Funcionarios do tipo **Pessoa Física** (Pessoa Fisica) exigem CPF, RG e data de nascimento
+- Funcionarios do tipo **Pessoa Jurídica** (Pessoa Juridica) exigem apenas CNPJ
+- Funcionarios do tipo **Pessoa Física** com menos de 18 anos nao podem ser adicionados a empresas no estado do **PR (Parana)**
 
 ## Funcionalidades
 
