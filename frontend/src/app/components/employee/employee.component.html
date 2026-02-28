@@ -1,27 +1,27 @@
 <div class="employee-page">
   <div class="page-header">
-    <h1>Employees</h1>
-    <a routerLink="/employees/new" class="btn btn-primary">+ Add Employee</a>
+    <h1>Funcionários</h1>
+    <a routerLink="/employees/new" class="btn btn-primary">+ Novo Funcionário</a>
   </div>
 
   <div class="search-bar">
     <input
       type="text"
-      placeholder="Search by name..."
+      placeholder="Buscar por nome..."
       [(ngModel)]="searchName"
       (keyup.enter)="onSearch()"
     />
     <input
       type="text"
-      placeholder="Search by CPF/CNPJ..."
+      placeholder="Buscar por CPF/CNPJ..."
       [(ngModel)]="searchDocument"
       (keyup.enter)="onSearch()"
     />
-    <button class="btn btn-secondary" (click)="onSearch()">Search</button>
+    <button class="btn btn-secondary" (click)="onSearch()">Buscar</button>
   </div>
 
   @if (loading) {
-    <div class="state-message">Loading...</div>
+    <div class="state-message">Carregando...</div>
   }
 
   @if (error) {
@@ -29,19 +29,19 @@
   }
 
   @if (!loading && !error && employees.length === 0) {
-    <div class="state-message">No employees found.</div>
+    <div class="state-message">Nenhum funcionário encontrado.</div>
   }
 
   @if (!loading && employees.length > 0) {
     <table class="data-table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Document</th>
-          <th>Type</th>
+          <th>Nome</th>
+          <th>Documento</th>
+          <th>Tipo</th>
           <th>Email</th>
-          <th>State</th>
-          <th>Actions</th>
+          <th>Estado</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -53,7 +53,7 @@
             <td>{{ employee.email }}</td>
             <td>{{ employee.state }}</td>
             <td>
-              <button class="btn btn-danger btn-sm" (click)="deleteEmployee(employee.id)">Delete</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteEmployee(employee.id)">Excluir</button>
             </td>
           </tr>
         }
@@ -67,7 +67,7 @@
           [disabled]="page === 0"
           (click)="goToPage(page - 1)"
         >
-          Previous
+          Anterior
         </button>
         @for (p of pages; track p) {
           <button
@@ -83,7 +83,7 @@
           [disabled]="page === totalPages - 1"
           (click)="goToPage(page + 1)"
         >
-          Next
+          Próximo
         </button>
       </div>
     }

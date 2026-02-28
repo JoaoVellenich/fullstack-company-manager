@@ -1,27 +1,27 @@
 <div class="company-page">
   <div class="page-header">
-    <h1>Companies</h1>
-    <a routerLink="/companies/new" class="btn btn-primary">+ Add Company</a>
+    <h1>Empresas</h1>
+    <a routerLink="/companies/new" class="btn btn-primary">+ Nova Empresa</a>
   </div>
 
   <div class="search-bar">
     <input
       type="text"
-      placeholder="Search by name..."
+      placeholder="Buscar por nome..."
       [(ngModel)]="searchName"
       (keyup.enter)="onSearch()"
     />
     <input
       type="text"
-      placeholder="Search by CNPJ..."
+      placeholder="Buscar por CNPJ..."
       [(ngModel)]="searchCnpj"
       (keyup.enter)="onSearch()"
     />
-    <button class="btn btn-secondary" (click)="onSearch()">Search</button>
+    <button class="btn btn-secondary" (click)="onSearch()">Buscar</button>
   </div>
 
   @if (loading) {
-    <div class="state-message">Loading...</div>
+    <div class="state-message">Carregando...</div>
   }
 
   @if (error) {
@@ -29,19 +29,19 @@
   }
 
   @if (!loading && !error && companies.length === 0) {
-    <div class="state-message">No companies found.</div>
+    <div class="state-message">Nenhuma empresa encontrada.</div>
   }
 
   @if (!loading && companies.length > 0) {
     <table class="data-table">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>Nome</th>
           <th>CNPJ</th>
           <th>CEP</th>
-          <th>State</th>
-          <th>Employees</th>
-          <th>Actions</th>
+          <th>Estado</th>
+          <th>Funcionários</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -53,7 +53,7 @@
             <td>{{ company.state }}</td>
             <td>{{ company.employees.length }}</td>
             <td>
-              <button class="btn btn-danger btn-sm" (click)="deleteCompany(company.id)">Delete</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteCompany(company.id)">Excluir</button>
             </td>
           </tr>
         }
@@ -67,7 +67,7 @@
           [disabled]="page === 0"
           (click)="goToPage(page - 1)"
         >
-          Previous
+          Anterior
         </button>
         @for (p of pages; track p) {
           <button
@@ -83,7 +83,7 @@
           [disabled]="page === totalPages - 1"
           (click)="goToPage(page + 1)"
         >
-          Next
+          Próximo
         </button>
       </div>
     }

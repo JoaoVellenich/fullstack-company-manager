@@ -1,0 +1,187 @@
+<div class="create-page">
+  <a routerLink="/companies" class="back-link">&larr; Voltar para empresas</a>
+
+  <h1>Criar Empresa</h1>
+
+  @if (error) {
+    <div class="state-message error">{{ error }}</div>
+  }
+
+  <form (ngSubmit)="onSubmit()" class="create-form">
+    <div class="form-group">
+      <label for="companyName">Nome da Empresa *</label>
+      <input
+        id="companyName"
+        type="text"
+        [(ngModel)]="companyName"
+        name="companyName"
+        placeholder="Digite o nome da empresa"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="cnpj">CNPJ *</label>
+      <input
+        id="cnpj"
+        type="text"
+        [(ngModel)]="cnpj"
+        name="cnpj"
+        placeholder="14 dígitos"
+        maxlength="18"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="cep">CEP *</label>
+      <div class="cep-row">
+        <input
+          id="cep"
+          type="text"
+          [(ngModel)]="cep"
+          name="cep"
+          placeholder="8 dígitos"
+          maxlength="9"
+          (blur)="lookupCep()"
+          required
+        />
+        <button type="button" class="btn btn-secondary" (click)="lookupCep()" [disabled]="cepLoading">
+          {{ cepLoading ? 'Buscando...' : 'Validar CEP' }}
+        </button>
+      </div>
+      @if (cepError) {
+        <span class="field-error">{{ cepError }}</span>
+      }
+      @if (cepInfo) {
+        <div class="cep-info">
+          {{ cepInfo.logradouro }}, {{ cepInfo.bairro }} - {{ cepInfo.cidade }}/{{ cepInfo.uf }}
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="state">Estado *</label>
+      <input
+        id="state"
+        type="text"
+        [(ngModel)]="state"
+        name="state"
+        readonly
+        placeholder="Preenchido automaticamente pelo CEP"
+      />
+    </div>
+
+    <div class="section-header">
+      <h2>Funcionários ({{ selectedEmployees.length }})</h2>
+      <button type="button" class="btn btn-primary" (click)="toggleSearch()">
+        {{ showSearch ? 'Cancelar' : 'Adicionar Funcionário' }}
+      </button>
+    </div>
+
+    @if (showSearch) {
+      <div class="search-panel">
+        <div class="search-bar">
+          <input
+            type="text"
+            placeholder="Filtrar por nome..."
+            [(ngModel)]="searchName"
+            name="searchName"
+            (ngModelChange)="onSearchChange()"
+          />
+        </div>
+
+        @if (searching) {
+          <div class="state-message">Carregando funcionários...</div>
+        }
+
+        @if (!searching && employeeResults.length > 0) {
+          <div class="search-results">
+            @for (emp of employeeResults; track emp.id) {
+              <div class="search-result-item" [class.disabled]="isSelected(emp.id)">
+                <div class="result-info">
+                  <span class="result-name">{{ emp.name }}</span>
+                  <span class="result-detail">{{ getDocumentFromEmployee(emp) }} · {{ emp.email }} - {{ formatEmployeeType(emp.type) }}</span>
+                </div>
+                @if (!isSelected(emp.id)) {
+                  <button type="button" class="btn btn-primary btn-sm" (click)="addEmployee(emp)">Adicionar</button>
+                } @else {
+                  <span class="already-added">Selecionado</span>
+                }
+              </div>
+            }
+          </div>
+
+          @if (empTotalPages > 1) {
+            <div class="pagination">
+              <button
+                type="button"
+                class="btn btn-page"
+                [disabled]="empPage === 0"
+                (click)="goToEmpPage(empPage - 1)"
+              >
+                Anterior
+              </button>
+              @for (p of empPages; track p) {
+                <button
+                  type="button"
+                  class="btn btn-page"
+                  [class.active]="p === empPage"
+                  (click)="goToEmpPage(p)"
+                >
+                  {{ p + 1 }}
+                </button>
+              }
+              <button
+                type="button"
+                class="btn btn-page"
+                [disabled]="empPage === empTotalPages - 1"
+                (click)="goToEmpPage(empPage + 1)"
+              >
+                Próximo
+              </button>
+            </div>
+          }
+        }
+
+        @if (!searching && employeeResults.length === 0) {
+          <div class="state-message">Nenhum funcionário encontrado.</div>
+        }
+      </div>
+    }
+
+    @if (selectedEmployees.length > 0) {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Documento</th>
+            <th>Email</th>
+            <th>Tipo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (emp of selectedEmployees; track emp.id) {
+            <tr>
+              <td>{{ emp.name }}</td>
+              <td>{{ getDocumentFromEmployee(emp) }}</td>
+              <td>{{ emp.email }}</td>
+              <td>{{ formatEmployeeType(emp.type) }}</td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="removeEmployee(emp.id)">Remover</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="!isFormValid || submitting">
+        {{ submitting ? 'Criando...' : 'Criar Empresa' }}
+      </button>
+      <a routerLink="/companies" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>

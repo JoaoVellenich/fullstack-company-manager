@@ -41,6 +41,21 @@ services:
     networks:
       - backend
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: company_manager_frontend
+    restart: always
+    ports:
+      - "4200:80"
+    environment:
+      API_URL: http://localhost:5001/companyManager/api
+    depends_on:
+      - app
+    networks:
+      - backend
+
   pgadmin:
     image: dpage/pgadmin4:8
     container_name: local_pgadmin

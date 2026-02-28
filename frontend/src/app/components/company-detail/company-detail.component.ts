@@ -48,7 +48,7 @@ export class CompanyDetailComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Failed to load company.';
+        this.error = 'Falha ao carregar empresa.';
         this.loading = false;
       },
     });
@@ -110,7 +110,7 @@ export class CompanyDetailComponent implements OnInit {
           this.company = updated;
         },
         error: () => {
-          this.error = 'Failed to add employee.';
+          this.error = 'Falha ao adicionar funcionário.';
         },
       });
   }
@@ -137,7 +137,7 @@ export class CompanyDetailComponent implements OnInit {
     if (!this.company) return;
     if (
       !confirm(
-        'Are you sure you want to remove this employee from the company?',
+        'Tem certeza que deseja remover este funcionário da empresa?',
       )
     )
       return;
@@ -148,7 +148,7 @@ export class CompanyDetailComponent implements OnInit {
           this.company = updated;
         },
         error: () => {
-          this.error = 'Failed to remove employee.';
+          this.error = 'Falha ao remover funcionário.';
         },
       });
   }

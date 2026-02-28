@@ -48,7 +48,7 @@ export class EmployeeDetailComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Failed to load employee.';
+        this.error = 'Falha ao carregar funcionário.';
         this.loading = false;
       },
     });
@@ -64,7 +64,7 @@ export class EmployeeDetailComponent implements OnInit {
   }
 
   getDocumentLabel(): string {
-    if (!this.employee) return 'Document';
+    if (!this.employee) return 'Documento';
     return this.employee.type === 'INDIVIDUAL' ? 'CPF' : 'CNPJ';
   }
 
@@ -134,7 +134,7 @@ export class EmployeeDetailComponent implements OnInit {
           this.employee = updated;
         },
         error: () => {
-          this.error = 'Failed to add company.';
+          this.error = 'Falha ao adicionar empresa.';
         },
       });
   }
@@ -143,7 +143,7 @@ export class EmployeeDetailComponent implements OnInit {
     if (!this.employee) return;
     if (
       !confirm(
-        'Are you sure you want to remove this company from the employee?',
+        'Tem certeza que deseja remover esta empresa do funcionário?',
       )
     )
       return;
@@ -154,7 +154,7 @@ export class EmployeeDetailComponent implements OnInit {
           this.loadEmployee(this.employee!.id);
         },
         error: () => {
-          this.error = 'Failed to remove company.';
+          this.error = 'Falha ao remover empresa.';
         },
       });
   }

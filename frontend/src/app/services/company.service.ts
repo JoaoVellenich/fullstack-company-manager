@@ -3,11 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Company, CreateCompanyRequest } from '../models/company.model';
 import { Page } from '../models/page.model';
+import { appConfig } from '../app-config';
 
 @Injectable({ providedIn: 'root' })
 export class CompanyService {
-  private readonly baseUrl =
-    'http://localhost:8080/companyManager/api/companies';
+  private get baseUrl(): string {
+    return `${appConfig.apiUrl}/companies`;
+  }
 
   constructor(private http: HttpClient) {}
 
@@ -41,15 +43,24 @@ export class CompanyService {
     return this.http.get<Company>(`${this.baseUrl}/${id}`);
   }
 
-  addEmployeeToCompany(companyId: number, employeeIds: number[]): Observable<Company> {
+  addEmployeeToCompany(
+    companyId: number,
+    employeeIds: number[],
+  ): Observable<Company> {
     return this.http.put<Company>(`${this.baseUrl}/${companyId}/employee/add`, {
       employeeId: employeeIds,
     });
   }
 
-  removeEmployeeFromCompany(companyId: number, employeeIds: number[]): Observable<Company> {
-    return this.http.put<Company>(`${this.baseUrl}/${companyId}/employee/remove`, {
-      employeeId: employeeIds,
-    });
+  removeEmployeeFromCompany(
+    companyId: number,
+    employeeIds: number[],
+  ): Observable<Company> {
+    return this.http.put<Company>(
+      `${this.baseUrl}/${companyId}/employee/remove`,
+      {
+        employeeId: employeeIds,
+      },
+    );
   }
 }

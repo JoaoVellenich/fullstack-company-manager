@@ -52,7 +52,7 @@ export class CompanyComponent implements OnInit {
         },
         error: () => {
           this.error =
-            'Failed to load companies. Make sure the backend is running.';
+            'Falha ao carregar empresas. Verifique se o backend está rodando.';
           this.loading = false;
         },
       });
@@ -69,14 +69,14 @@ export class CompanyComponent implements OnInit {
   }
 
   deleteCompany(id: number): void {
-    if (!confirm('Are you sure you want to delete this company?')) {
+    if (!confirm('Tem certeza que deseja excluir esta empresa?')) {
       return;
     }
 
     this.companyService.deleteCompany(id).subscribe({
       next: () => this.loadCompanies(),
       error: () => {
-        this.error = 'Failed to delete company.';
+        this.error = 'Falha ao excluir empresa.';
       },
     });
   }

@@ -52,7 +52,7 @@ export class EmployeeComponent implements OnInit {
         },
         error: () => {
           this.error =
-            'Failed to load employees. Make sure the backend is running.';
+            'Falha ao carregar funcionários. Verifique se o backend está rodando.';
           this.loading = false;
         },
       });
@@ -69,14 +69,14 @@ export class EmployeeComponent implements OnInit {
   }
 
   deleteEmployee(id: number): void {
-    if (!confirm('Are you sure you want to delete this employee?')) {
+    if (!confirm('Tem certeza que deseja excluir este funcionário?')) {
       return;
     }
 
     this.employeeService.deleteEmployee(id).subscribe({
       next: () => this.loadEmployees(),
       error: () => {
-        this.error = 'Failed to delete employee.';
+        this.error = 'Falha ao excluir funcionário.';
       },
     });
   }

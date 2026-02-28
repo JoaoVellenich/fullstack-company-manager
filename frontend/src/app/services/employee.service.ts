@@ -3,11 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Employee, CreateEmployeeRequest } from '../models/employee.model';
 import { Page } from '../models/page.model';
+import { appConfig } from '../app-config';
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
-  private readonly baseUrl =
-    'http://localhost:8080/companyManager/api/employees';
+  private get baseUrl(): string {
+    return `${appConfig.apiUrl}/employees`;
+  }
 
   constructor(private http: HttpClient) {}
 
@@ -41,9 +43,15 @@ export class EmployeeService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  addCompanyToEmployee(employeeId: number, companyIds: number[]): Observable<Employee> {
-    return this.http.put<Employee>(`${this.baseUrl}/${employeeId}/company/add`, {
-      companyId: companyIds,
-    });
+  addCompanyToEmployee(
+    employeeId: number,
+    companyIds: number[],
+  ): Observable<Employee> {
+    return this.http.put<Employee>(
+      `${this.baseUrl}/${employeeId}/company/add`,
+      {
+        companyId: companyIds,
+      },
+    );
   }
 }

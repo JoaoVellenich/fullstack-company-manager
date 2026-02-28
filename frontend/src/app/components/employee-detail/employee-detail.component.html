@@ -1,8 +1,8 @@
 <div class="detail-page">
-  <a routerLink="/employees" class="back-link">&larr; Back to employees</a>
+  <a routerLink="/employees" class="back-link">&larr; Voltar para funcionários</a>
 
   @if (loading) {
-    <div class="state-message">Loading...</div>
+    <div class="state-message">Carregando...</div>
   }
 
   @if (error) {
@@ -14,7 +14,7 @@
       <h1>{{ employee.name }}</h1>
       <div class="info-grid">
         <div class="info-item">
-          <span class="info-label">Type</span>
+          <span class="info-label">Tipo</span>
           <span>{{ formatType(employee.type) }}</span>
         </div>
         <div class="info-item">
@@ -29,7 +29,7 @@
         }
         @if (employee.birthDate) {
           <div class="info-item">
-            <span class="info-label">Birth Date</span>
+            <span class="info-label">Data de Nascimento</span>
             <span>{{ employee.birthDate }}</span>
           </div>
         }
@@ -44,16 +44,16 @@
           <span>{{ employee.cep }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">State</span>
+          <span class="info-label">Estado</span>
           <span>{{ employee.state }}</span>
         </div>
       </div>
     </div>
 
     <div class="section-header">
-      <h2>Companies ({{ employee.companies.length }})</h2>
+      <h2>Empresas ({{ employee.companies.length }})</h2>
       <button class="btn btn-primary" (click)="toggleSearch()">
-        {{ showSearch ? 'Cancel' : 'Add Company' }}
+        {{ showSearch ? 'Cancelar' : 'Adicionar Empresa' }}
       </button>
     </div>
 
@@ -62,14 +62,14 @@
         <div class="search-bar">
           <input
             type="text"
-            placeholder="Filter by name..."
+            placeholder="Filtrar por nome..."
             [(ngModel)]="searchName"
             (ngModelChange)="onSearchChange()"
           />
         </div>
 
         @if (searching) {
-          <div class="state-message">Loading companies...</div>
+          <div class="state-message">Carregando empresas...</div>
         }
 
         @if (!searching && companyResults.length > 0) {
@@ -81,9 +81,9 @@
                   <span class="result-detail">{{ formatCnpj(comp.cnpj) }} &middot; {{ comp.state }}</span>
                 </div>
                 @if (!isAlreadyInEmployee(comp.id)) {
-                  <button class="btn btn-primary btn-sm" (click)="addCompany(comp.id)">Add</button>
+                  <button class="btn btn-primary btn-sm" (click)="addCompany(comp.id)">Adicionar</button>
                 } @else {
-                  <span class="already-added">Already added</span>
+                  <span class="already-added">Já adicionada</span>
                 }
               </div>
             }
@@ -96,7 +96,7 @@
                 [disabled]="compPage === 0"
                 (click)="goToCompPage(compPage - 1)"
               >
-                Previous
+                Anterior
               </button>
               @for (p of compPages; track p) {
                 <button
@@ -112,14 +112,14 @@
                 [disabled]="compPage === compTotalPages - 1"
                 (click)="goToCompPage(compPage + 1)"
               >
-                Next
+                Próximo
               </button>
             </div>
           }
         }
 
         @if (!searching && companyResults.length === 0) {
-          <div class="state-message">No companies found.</div>
+          <div class="state-message">Nenhuma empresa encontrada.</div>
         }
       </div>
     }
@@ -128,11 +128,11 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>Name</th>
+            <th>Nome</th>
             <th>CNPJ</th>
             <th>CEP</th>
-            <th>State</th>
-            <th>Actions</th>
+            <th>Estado</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -143,14 +143,14 @@
               <td>{{ comp.cep }}</td>
               <td>{{ comp.state }}</td>
               <td>
-                <button class="btn btn-danger btn-sm" (click)="removeCompany(comp.id)">Remove</button>
+                <button class="btn btn-danger btn-sm" (click)="removeCompany(comp.id)">Remover</button>
               </td>
             </tr>
           }
         </tbody>
       </table>
     } @else {
-      <div class="state-message">No companies associated with this employee yet.</div>
+      <div class="state-message">Nenhuma empresa associada a este funcionário ainda.</div>
     }
   }
 </div>

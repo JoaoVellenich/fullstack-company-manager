@@ -1,0 +1,157 @@
+<div class="create-page">
+  <a routerLink="/employees" class="back-link">&larr; Voltar para funcionários</a>
+
+  <h1>Criar Funcionário</h1>
+
+  @if (error) {
+    <div class="state-message error">{{ error }}</div>
+  }
+
+  <form (ngSubmit)="onSubmit()" class="create-form">
+    <div class="form-group">
+      <label for="name">Nome *</label>
+      <input
+        id="name"
+        type="text"
+        [(ngModel)]="name"
+        name="name"
+        placeholder="Digite o nome do funcionário"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        [(ngModel)]="email"
+        name="email"
+        placeholder="Digite o email"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Tipo *</label>
+      <div class="type-selector">
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="type"
+            value="INDIVIDUAL"
+            [(ngModel)]="type"
+          />
+          Pessoa Física
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="type"
+            value="LEGAL_ENTITY"
+            [(ngModel)]="type"
+          />
+          Pessoa Jurídica
+        </label>
+      </div>
+    </div>
+
+    @if (type === 'INDIVIDUAL') {
+      <div class="form-group">
+        <label for="cpf">CPF *</label>
+        <input
+          id="cpf"
+          type="text"
+          [(ngModel)]="cpf"
+          name="cpf"
+          placeholder="11 dígitos"
+          maxlength="14"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="rg">RG *</label>
+        <input
+          id="rg"
+          type="text"
+          [(ngModel)]="rg"
+          name="rg"
+          placeholder="Digite o RG"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="birthDate">Data de Nascimento *</label>
+        <input
+          id="birthDate"
+          type="date"
+          [(ngModel)]="birthDate"
+          name="birthDate"
+          required
+        />
+      </div>
+    }
+
+    @if (type === 'LEGAL_ENTITY') {
+      <div class="form-group">
+        <label for="cnpj">CNPJ *</label>
+        <input
+          id="cnpj"
+          type="text"
+          [(ngModel)]="cnpj"
+          name="cnpj"
+          placeholder="14 dígitos"
+          maxlength="18"
+          required
+        />
+      </div>
+    }
+
+    <div class="form-group">
+      <label for="cep">CEP *</label>
+      <div class="cep-row">
+        <input
+          id="cep"
+          type="text"
+          [(ngModel)]="cep"
+          name="cep"
+          placeholder="8 dígitos"
+          maxlength="9"
+          (blur)="lookupCep()"
+          required
+        />
+        <button type="button" class="btn btn-secondary" (click)="lookupCep()" [disabled]="cepLoading">
+          {{ cepLoading ? 'Buscando...' : 'Validar CEP' }}
+        </button>
+      </div>
+      @if (cepError) {
+        <span class="field-error">{{ cepError }}</span>
+      }
+      @if (cepInfo) {
+        <div class="cep-info">
+          {{ cepInfo.logradouro }}, {{ cepInfo.bairro }} - {{ cepInfo.cidade }}/{{ cepInfo.uf }}
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="state">Estado *</label>
+      <input
+        id="state"
+        type="text"
+        [(ngModel)]="state"
+        name="state"
+        readonly
+        placeholder="Preenchido automaticamente pelo CEP"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="!isFormValid || submitting">
+        {{ submitting ? 'Criando...' : 'Criar Funcionário' }}
+      </button>
+      <a routerLink="/employees" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>

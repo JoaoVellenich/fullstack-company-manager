@@ -1,0 +1,15 @@
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install
+RUN npm ci
+COPY . .
+RUN npx ng build --configuration=production
+
+FROM nginx:alpine
+COPY --from=build /app/dist/company-manager /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+EXPOSE 80
+ENTRYPOINT ["/entrypoint.sh"]
